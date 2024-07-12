@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import sys
+from calendar import prcal
 from idlelib.undo import Command
 from os import getenv
 from pyexpat.errors import messages
@@ -32,28 +33,21 @@ async def command_start_handler(message: Message) -> None:
     # await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!")
 
 
-# @dp.message()
-# async def echo_handler(message: Message) -> None:
-#     """
-#     Handler will forward receive a message back to the sender
-#
-#     By default, message handler will handle all message types (like a text, photo, sticker etc.)
-#     """
-#     try:
-#         # Send a copy of the received message
-#         await message.send_copy(chat_id=message.chat.id)
-#         await message.answer(f"user id: {str(message.from_user.id)}")
-#
-#     except TypeError:
-#         # But not all the types is supported to be copied so need to handle it
-#         await message.answer("Nice try!")
-
-
 @dp.message(Command("task"))
 async def add_task(message: Message) -> None:
     user = view.User(message.from_user.id)
     task = user.create_task("dsada", "sdad")
     await message.answer(task)
+
+
+@dp.message(Command("tasks"))
+async def add_task(message: Message) -> None:
+    user = view.User(message.from_user.id)
+    task_list = user.get_tasks()
+    bot_message = f"Your tasks:"
+    for task in task_list:
+        bot_message += f"\nTask name: {task.title}, Description: {task.description}, Status: {task.status}"
+    await message.answer(bot_message)
 
 
 async def main() -> None:

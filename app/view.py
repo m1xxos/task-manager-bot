@@ -33,3 +33,10 @@ class User:
             session.refresh(_user)
             task = _user.tasks[-1].title
         return task
+
+    def get_tasks(self):
+        with Session(self._engine) as session:
+            statement = select(model.User).where(model.User.id == self._user_id)
+            _user = session.exec(statement).one()
+            task_list = [_ for _ in _user.tasks]
+        return task_list
