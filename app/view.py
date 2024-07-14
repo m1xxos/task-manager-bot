@@ -40,3 +40,9 @@ class User:
             _user = session.exec(statement).one()
             task_list = [_ for _ in _user.tasks]
         return task_list
+
+    def delete_task(self, task_id):
+        with Session(self._engine) as session:
+            statement = select(model.User).where(model.User.id == self._user_id)
+            _user = session.exec(statement).one()
+            _user.tasks.remove(task_id)
